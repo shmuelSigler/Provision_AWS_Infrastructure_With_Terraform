@@ -51,7 +51,7 @@ Proof of connectivity:
 ![](https://github.com/shmuelSigler/Provision_AWS_Infrastructure_With_Terraform/blob/main/screenshot/ping%20from%20east%20to%20west.png?raw=true)
 
 
-**Ping from EC2 instance in us-west-1 region to 10.0.1.53 **
+**Ping from EC2 instance in us-west-1 region to 10.0.1.53**
 
 ![](https://github.com/shmuelSigler/Provision_AWS_Infrastructure_With_Terraform/blob/main/screenshot/ping%20from%20west%20to%20east.png?raw=true)
 
@@ -87,3 +87,12 @@ Apply the Terraform configuration
   terraform apply
 ```
 
+## Documentation
+
+[Amazon Machine Images (AMIs) with SSM Agent preinstalled ](https://docs.aws.amazon.com/systems-manager/latest/userguide/ami-preinstalled-agent.html): SSM Agent is preinstalled on some Amazon Machine Images (AMIs) provided by AWS.
+
+[AmazonSSMManagedInstanceCore](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonSSMManagedInstanceCore.html): The policy for Amazon EC2 Role to enable AWS Systems Manager service core functionality.
+
+[How to Attach an IAM Role to EC2 Instance using Terraform](https://cloudkatha.com/how-to-attach-an-iam-role-to-ec2-instance-using-terraform/)
+
+[VPC peering](https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html): A VPC peering connection is a networking connection between two VPCs that enables you to route traffic between them using private IPv4 addresses.
