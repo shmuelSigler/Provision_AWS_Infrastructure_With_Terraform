@@ -96,3 +96,7 @@ Apply the Terraform configuration
 [How to Attach an IAM Role to EC2 Instance using Terraform](https://cloudkatha.com/how-to-attach-an-iam-role-to-ec2-instance-using-terraform/)
 
 [VPC peering](https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html): A VPC peering connection is a networking connection between two VPCs that enables you to route traffic between them using private IPv4 addresses.
+
+<a href="https://trackgit.com">
+<img src="https://us-central1-trackgit-analytics.cloudfunctions.net/token/ping/loh31myzjf6ap595rril" alt="trackgit-views" />
+</a>
