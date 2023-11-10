@@ -35,6 +35,8 @@ When establishing peering relationships between VPCs across different AWS Region
 ## AWS Systems Manager
 As more and more organizations adopt cloud computing, managing resources on cloud platforms like AWS becomes increasingly important. The need to manage multiple instances of EC2 instances effectively has led to the development of various tools to simplify the process. One such tool is the AWS Systems Manager (SSM), which enables users to manage EC2 instances, as well as other AWS resources, using a single interface. One of the most powerful features of SSM is the ability to perform **SSH-less login** to EC2 machines, which i used.
 
+![](https://github.com/shmuelSigler/Provision_AWS_Infrastructure_With_Terraform/blob/main/screenshot/ssm%20endpoint.png?raw=true)
+
 #### How to Use SSM for SSH-Less Login?
 To use SSM for SSH-less login, follow the steps below:
 
