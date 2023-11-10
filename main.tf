@@ -80,20 +80,8 @@ resource "aws_subnet" "subnet_us_west" {
 }
 
 # East components
-resource "aws_internet_gateway" "IGW-east" {
-  vpc_id = aws_vpc.vpc_us_east.id
-  tags = {
-    Name = "east-IGW"
-  }
-}
-
 resource "aws_route_table" "east-pub-RT" {
   vpc_id = aws_vpc.vpc_us_east.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.IGW-east.id
-  }
   
   route {
     cidr_block = var.WEST
@@ -111,22 +99,9 @@ resource "aws_route_table_association" "east-pub-1-a" {
 }
 
 # West components
-resource "aws_internet_gateway" "IGW-west" {
-  vpc_id = aws_vpc.vpc_us_west.id
-  provider = aws.us-west
-  tags = {
-    Name = "west-IGW"
-  }
-   
-}
-
 resource "aws_route_table" "west-pub-RT" {
   vpc_id = aws_vpc.vpc_us_west.id
   provider = aws.us-west
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.IGW-west.id
-  }
   
   route {
     cidr_block = var.EAST
@@ -188,7 +163,7 @@ resource "aws_security_group" "allow_ping_east" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1" 
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.EAST]
   }
   
   egress {
@@ -221,7 +196,7 @@ resource "aws_security_group" "allow_ping_west" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1" 
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.WEST]
   }
   
   egress {
@@ -234,6 +209,73 @@ resource "aws_security_group" "allow_ping_west" {
   tags = {
     Name = "allow-ping-west" 
   }
+}
+
+# Create VPC Endpoints For Session Manager
+resource "aws_security_group" "east_ssm_sg" {
+  name        = "ssm-sg"
+  vpc_id      = aws_vpc.vpc_us_east.id
+
+  ingress {
+    description = "HTTPS from VPC"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [aws_vpc.vpc_us_east.cidr_block]
+  }
+
+}
+
+resource "aws_security_group" "west_ssm_sg" {
+  name        = "ssm-sg"
+  vpc_id      = aws_vpc.vpc_us_west.id
+  provider    = aws.us-west
+  
+  ingress {
+    description = "HTTPS from VPC"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [aws_vpc.vpc_us_west.cidr_block]
+  }
+  
+}
+
+locals {
+  endpoints = {
+    "endpoint-ssm" = {
+      name = "ssm"
+    },
+    "endpoint-ssmm-essages" = {
+      name = "ssmmessages"
+    },
+    "endpoint-ec2-messages" = {
+      name = "ec2messages"
+    }
+  }
+}
+
+resource "aws_vpc_endpoint" "east_endpoints" {
+  vpc_id            = aws_vpc.vpc_us_east.id
+  subnet_ids        = [aws_subnet.subnet_us_east.id]
+  for_each          = local.endpoints
+  vpc_endpoint_type = "Interface"
+  service_name      = "com.amazonaws.us-east-1.${each.value.name}"
+  security_group_ids = [aws_security_group.east_ssm_sg.id]
+  private_dns_enabled = true	# enabling DNS resolution allows to make requests to the service using its default DNS hostname
+
+}
+
+resource "aws_vpc_endpoint" "west_endpoints" {
+  provider    = aws.us-west
+  vpc_id            = aws_vpc.vpc_us_west.id
+  subnet_ids        = [aws_subnet.subnet_us_west.id]
+  for_each          = local.endpoints
+  vpc_endpoint_type = "Interface"
+  service_name      = "com.amazonaws.us-west-1.${each.value.name}"
+  security_group_ids = [aws_security_group.west_ssm_sg.id]
+  private_dns_enabled = true
+
 }
 
 
